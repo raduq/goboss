@@ -92,7 +92,7 @@ func RemoveContents(dir string) (err error) {
 	return nil
 }
 
-func Start(jb string) (err error) {
+func Start(jb string, debug bool) (err error) {
 	log := "standalone/log/server.log"
 
 	err = CleanLogs(jb)
@@ -100,11 +100,16 @@ func Start(jb string) (err error) {
 		return err
 	}
 
-	sh1 := "bin/standalone.sh -b localhost --server-config=standalone.xml -Djboss.server.base.dir=" + jb + "standalone "
+	sh0 := "bin/standalone.sh "
+	if debug {
+		sh0 = "bin/debug.sh "
+	}
+	sh1 := "-b localhost --server-config=standalone.xml -Djboss.server.base.dir=" + jb + "standalone "
 	sh2 := "-P=" + jb + "standalone/configuration/contaazul.properties"
-	shPath := jb + sh1 + sh2
+	shPath := jb + sh0 + sh1 + sh2
 
 	cmd := exec.Command("/bin/sh", "-c", shPath)
+
 	err = cmd.Start()
 	if err != nil {
 		return err
@@ -115,6 +120,7 @@ func Start(jb string) (err error) {
 		return err
 	}
 	return nil
+
 }
 
 func Execute(dir, comm string, args ...string) {
