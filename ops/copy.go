@@ -92,30 +92,27 @@ func RemoveContents(dir string) (err error) {
 	return nil
 }
 
-func Start(jb string, debug bool) (err error) {
-	log := "standalone/log/server.log"
-
-	err = CleanLogs(jb)
+func Start(binFolder, runFile, debugFile, runArg, logsFolder, logFile string, debug bool) (err error) {
+	err = CleanLogs(logsFolder)
 	if err != nil {
 		return err
 	}
 
-	sh0 := "bin/standalone.sh "
+	binFile := runFile + " "
 	if debug {
-		sh0 = "bin/debug.sh "
+		binFile = debugFile + " "
 	}
-	sh1 := "-b localhost --server-config=standalone.xml -Djboss.server.base.dir=" + jb + "standalone "
-	sh2 := "-P=" + jb + "standalone/configuration/contaazul.properties"
-	shPath := jb + sh0 + sh1 + sh2
 
-	cmd := exec.Command("/bin/sh", "-c", shPath)
+	pa := binFolder + binFile + runArg
+	fmt.Printf("%s", pa)
+	cmd := exec.Command("/bin/sh", "-c", binFolder+"/"+binFile+runArg)
 
 	err = cmd.Start()
 	if err != nil {
 		return err
 	}
 
-	err = DoTail(jb + log)
+	err = DoTail(logsFolder + "/" + logFile)
 	if err != nil {
 		return err
 	}
@@ -123,7 +120,7 @@ func Start(jb string, debug bool) (err error) {
 
 }
 
-func Execute(dir, comm string, args ...string) {
+func Execute(dir, comm string, args []string) {
 	cmd := exec.Command(comm, args...)
 	cmd.Dir = dir
 	stderr, err := cmd.StderrPipe()
@@ -172,16 +169,14 @@ func DoTail(file string) (err error) {
 	return nil
 }
 
-func CleanLogs(jb string) (err error) {
-	logdir := jb + "standalone/log"
-
-	exists, err := exists(logdir)
+func CleanLogs(logsFolder string) (err error) {
+	exists, err := exists(logsFolder)
 	if err != nil {
 		return err
 	}
 
 	if exists {
-		err = RemoveContents(logdir)
+		err = RemoveContents(logsFolder)
 		if err != nil {
 			return err
 		}
