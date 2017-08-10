@@ -1,0 +1,15 @@
+{
+    "project.dir" : "<project home dir>",
+    "project.target.dir":"<project home target dir>",
+    "project.artifact" : "<project artifact> (ex: myproj.ear)",
+    
+    "jboss.dir":"<jboss home dir>",
+    "jboss.deploy.dir":"<jboss deploy dir>",
+    "jboss.log.dir":"<jboss log dir>",
+    "jboss.bin.dir":"<jboss bin dir>",
+
+    "jboss.log.file":"<jboss log file>",
+    "jboss.run.file":"<jboss run file>(usually standalone.sh)",
+    "jboss.debug.file":"<jboss debug file> (if exists, can be like run file with debug parameters on)",
+    "jboss.run.args":"<jboss run command line args> (if applied)"
+}
