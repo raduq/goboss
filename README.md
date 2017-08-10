@@ -1,7 +1,7 @@
 ## Goboss
 
-Build your java project, copy to jboss and run-it.
-Tested with Jboss EAP 6.4 on Ubuntu 16.04 (also jboss start is fixed with sh :sweat_smile:)
+- Build your java project, copy to jboss and run-it.
+- Tested with Jboss EAP 6.4 on Ubuntu 16.04 (also jboss start is fixed with sh :sweat_smile:)
 
 ## How To
 
