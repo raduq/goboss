@@ -2,130 +2,67 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"log"
-	"os"
+	"net/http"
 	"os/exec"
 
-	"github.com/creamdog/gonfig"
+	"github.com/gorilla/mux"
 	"github.com/raduq/goboss/ops"
 )
 
-type Config struct {
-	SkipBuild bool
-	Debug     bool
-	Hot       bool
-}
-
-type ProjectDir struct {
-	ProjectFolder string
-	TargetFolder  string
-	ArtifactName  string
-}
-
-type JbossDir struct {
-	JbossFolder      string
-	DeploymentFolder string
-	LogsFolder       string
-	BinFolder        string
-
-	LogFile   string
-	RunFile   string
-	DebugFile string
-
-	RunArgs string
-}
-
-type Build struct {
-	Command   string
-	Arguments []string
-}
-
 func main() {
-	config := Config{false, false, false}
-	verifyArgs(&config)
+	r := mux.NewRouter()
+	r.Path("/").
+		Methods(http.MethodGet).
+		HandlerFunc(index)
+	r.PathPrefix("/static/").
+		Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	r.HandleFunc("/goboss/start", bossStart).Methods("GET")
+	r.HandleFunc("/goboss/build", buildArtifact).Methods("GET")
+	r.HandleFunc("/goboss/unbuild", unbuild).Methods("GET")
+	log.Fatal(http.ListenAndServe(":8000", r))
+}
 
-	f, err := os.Open("config.json")
+func index(w http.ResponseWriter, r *http.Request) {
+	template.Must(template.ParseFiles("templates/index.html")).Execute(w, nil)
+}
+
+func bossStart(w http.ResponseWriter, r *http.Request) {
+	err := ops.Start(ops.NewConfig())
 	if err != nil {
-		log.Fatal("Cannot find config.json")
-	}
-	defer f.Close()
-
-	gf, _ := gonfig.FromJson(f)
-
-	pDir := ProjectDir{
-		getProp(gf, "project.dir"),
-		getProp(gf, "project.target.dir"),
-		getProp(gf, "project.artifact")}
-
-	jDir := JbossDir{
-		getProp(gf, "jboss.dir"),
-		getProp(gf, "jboss.deploy.dir"),
-		getProp(gf, "jboss.log.dir"),
-		getProp(gf, "jboss.bin.dir"),
-
-		getProp(gf, "jboss.log.file"),
-		getProp(gf, "jboss.run.file"),
-		getProp(gf, "jboss.debug.file"),
-		getProp(gf, "jboss.run.args")}
-
-	build := Build{
-		"/usr/bin/mvn",
-		[]string{"-T 1C", "package", "-o", "-Dmaven.test.skip", "-Dcheckstyle.skip", "-Denforcer.skip", "-Djacoco.skip"}}
-
-	err = ops.RemoveContents(jDir.DeploymentFolder)
-	if err != nil {
-		fmt.Printf("Error on clear jboss deployment folder\n")
-	} else {
-		buildArtifact(pDir, build, jDir, config)
+		fmt.Println(err)
 	}
 }
 
-func buildArtifact(pDir ProjectDir, build Build, jDir JbossDir, config Config) {
+func buildArtifact(w http.ResponseWriter, r *http.Request) {
 	var err error
-	if !config.SkipBuild {
-		path, err := exec.LookPath("mvn")
-		if err != nil {
-			log.Fatal("Maven not found on PATH")
-		}
-		fmt.Printf("Maven is available %s\n", path)
 
-		ops.Execute(pDir.ProjectFolder, build.Command, build.Arguments)
+	unbuild(w, r)
+
+	path, err := exec.LookPath("mvn")
+	if err != nil {
+		log.Fatal("Maven not found on PATH")
 	}
+	fmt.Printf("Maven is available %s\n", path)
 
-	pArtifact := pDir.TargetFolder + "/" + pDir.ArtifactName
-	dArtifact := jDir.DeploymentFolder + "/" + pDir.ArtifactName
+	config := ops.NewConfig()
+	ops.Execute(config.ProjectFolder, config.Command, config.Arguments)
+
+	pArtifact := config.TargetFolder + "/" + config.ArtifactName
+	dArtifact := config.DeploymentFolder + "/" + config.ArtifactName
 	err = ops.CopyFile(pArtifact, dArtifact)
 	if err != nil {
 		fmt.Printf("CopyFile failed %q\n", err)
 	} else {
 		fmt.Printf("CopyFile succeeded\n")
-		if !config.Hot {
-			err = ops.Start(jDir.BinFolder, jDir.RunFile, jDir.DebugFile, jDir.RunArgs, jDir.LogsFolder, jDir.LogFile, config.Debug)
-			if err != nil {
-				fmt.Println(err)
-			}
-		}
 	}
 }
 
-func getProp(gc gonfig.Gonfig, prop string) string {
-	value, err := gc.GetString(prop, nil)
+func unbuild(w http.ResponseWriter, r *http.Request) {
+	config := ops.NewConfig()
+	err := ops.RemoveContents(config.DeploymentFolder)
 	if err != nil {
-		log.Fatalf("Cannot find property %s", prop)
-	}
-	return value
-}
-
-func verifyArgs(conf *Config) {
-	for _, argument := range os.Args {
-		if argument == "debug" {
-			conf.Debug = true
-		}
-		if argument == "skipBuild" {
-			conf.SkipBuild = true
-		}
-		if argument == "hot" {
-			conf.Hot = true
-		}
+		fmt.Printf("Error on clear jboss deployment folder\n")
 	}
 }

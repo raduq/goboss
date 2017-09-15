@@ -1,15 +1,15 @@
 {
-    "project.dir" : "<project home dir>",
-    "project.target.dir":"<project home target dir>",
-    "project.artifact" : "<project artifact> (ex: myproj.ear)",
+    "project.dir" : "/home/raduansantos/git/ContaAzul",
+    "project.target.dir":"/home/raduansantos/git/ContaAzul/contaazul-app/target",
+    "project.artifact" : "contaazul-app.ear",
     
-    "jboss.dir":"<jboss home dir>",
-    "jboss.deploy.dir":"<jboss deploy dir>",
-    "jboss.log.dir":"<jboss log dir>",
-    "jboss.bin.dir":"<jboss bin dir>",
+    "jboss.dir":"/home/raduansantos/Dev/Server/wildfly10-contaazul-1.0.0-SNAPSHOT",
+    "jboss.deploy.dir":"/home/raduansantos/Dev/Server/wildfly10-contaazul-1.0.0-SNAPSHOT/standalone/deployments",
+    "jboss.log.dir":"/home/raduansantos/Dev/Server/wildfly10-contaazul-1.0.0-SNAPSHOT/standalone/log",
+    "jboss.bin.dir":"/home/raduansantos/Dev/Server/wildfly10-contaazul-1.0.0-SNAPSHOT/bin/",
 
-    "jboss.log.file":"<jboss log file>",
-    "jboss.run.file":"<jboss run file>(usually standalone.sh)",
-    "jboss.debug.file":"<jboss debug file> (if exists, can be like run file with debug parameters on)",
-    "jboss.run.args":"<jboss run command line args> (if applied)"
+    "jboss.log.file":"server.log",
+    "jboss.run.file":"standalone.sh",
+    "jboss.debug.file":"debug.sh",
+    "jboss.run.args": "-b localhost --server-config=standalone.xml -Djboss.server.base.dir=/home/raduansantos/Dev/Server/wildfly10-contaazul-1.0.0-SNAPSHOT/standalone -P /home/raduansantos/Dev/Server/wildfly10-contaazul-1.0.0-SNAPSHOT/standalone/configuration/contaazul.properties"
 }
