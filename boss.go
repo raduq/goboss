@@ -11,6 +11,8 @@ import (
 	"github.com/raduq/goboss/ops"
 )
 
+var ps Command
+
 func main() {
 	r := mux.NewRouter()
 	r.Path("/").
@@ -21,18 +23,23 @@ func main() {
 	r.HandleFunc("/goboss/start", bossStart).Methods("GET")
 	r.HandleFunc("/goboss/build", buildArtifact).Methods("GET")
 	r.HandleFunc("/goboss/unbuild", unbuild).Methods("GET")
+	r.HandleFunc("/goboss/kill", bossKill).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8000", r))
 }
 
-func index(w http.ResponseWriter, r *http.Request) {
+func index(w http.ResponseWriter, r *http.Request) (ps *Cmd) {
 	template.Must(template.ParseFiles("templates/index.html")).Execute(w, nil)
 }
 
 func bossStart(w http.ResponseWriter, r *http.Request) {
-	err := ops.Start(ops.NewConfig())
+	ps, err := ops.Start(ops.NewConfig())
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+
+func bossKill(w http.ResponseWriter, r *http.Request) {
+	exec.Command("kill -9 ", ps.Process.pid)
 }
 
 func buildArtifact(w http.ResponseWriter, r *http.Request) {

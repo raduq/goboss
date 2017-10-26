@@ -50,6 +50,7 @@ func NewConfig() Config {
 	config.RunArgs = getProp(gf, "jboss.run.args")
 	config.Command = "/usr/bin/mvn"
 	config.Arguments = []string{"-T 1C", "package", "-o", "-Dmaven.test.skip", "-Dcheckstyle.skip", "-Denforcer.skip", "-Djacoco.skip"}
+	config.Debug = true
 
 	return config
 }

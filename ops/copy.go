@@ -92,10 +92,10 @@ func RemoveContents(dir string) (err error) {
 	return nil
 }
 
-func Start(config Config) (err error) {
+func Start(config Config) (ps exec.Cmd, err error) {
 	err = CleanLogs(config.LogsFolder)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	binFile := config.RunFile + " "
@@ -109,14 +109,14 @@ func Start(config Config) (err error) {
 
 	err = cmd.Start()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	err = DoTail(config.LogsFolder + "/" + config.LogFile)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return cmd, nil
 
 }
 

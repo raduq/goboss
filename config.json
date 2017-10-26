@@ -2,7 +2,7 @@
     "project.dir" : "/home/raduansantos/git/ContaAzul",
     "project.target.dir":"/home/raduansantos/git/ContaAzul/contaazul-app/target",
     "project.artifact" : "contaazul-app.ear",
-    
+
     "jboss.dir":"/home/raduansantos/Dev/Server/wildfly10-contaazul-1.0.0-SNAPSHOT",
     "jboss.deploy.dir":"/home/raduansantos/Dev/Server/wildfly10-contaazul-1.0.0-SNAPSHOT/standalone/deployments",
     "jboss.log.dir":"/home/raduansantos/Dev/Server/wildfly10-contaazul-1.0.0-SNAPSHOT/standalone/log",
