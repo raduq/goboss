@@ -92,31 +92,31 @@ func RemoveContents(dir string) (err error) {
 	return nil
 }
 
-func Start(binFolder, runFile, debugFile, runArg, logsFolder, logFile string, debug bool) (err error) {
-	err = CleanLogs(logsFolder)
+func Start(config Config) (ps *exec.Cmd, err error) {
+	err = CleanLogs(config.LogsFolder)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	binFile := runFile + " "
-	if debug {
-		binFile = debugFile + " "
+	binFile := config.RunFile + " "
+	if config.Debug {
+		binFile = config.DebugFile + " "
 	}
 
-	pa := binFolder + binFile + runArg
+	pa := config.BinFolder + binFile + config.RunArgs
 	fmt.Printf("%s", pa)
-	cmd := exec.Command("/bin/sh", "-c", binFolder+"/"+binFile+runArg)
+	cmd := exec.Command("/bin/sh", "-c", config.BinFolder+"/"+binFile+config.RunArgs)
 
 	err = cmd.Start()
 	if err != nil {
-		return err
+		return cmd, err
 	}
 
-	err = DoTail(logsFolder + "/" + logFile)
+	err = DoTail(config.LogsFolder + "/" + config.LogFile)
 	if err != nil {
-		return err
+		return cmd, err
 	}
-	return nil
+	return cmd, nil
 
 }
 
