@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" ng-app="goboss">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,21 +10,24 @@
   <meta name="author" content="https://github/raduq">
   <link rel="stylesheet" href="/static/styles.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-resource.min.js"></script>
+  <script src="/scripts/goboss.js"></script>
 </head>
-<body>
+<body ng-controller="gobossController">
     <section>
 
         <div class="container">
 
             <div class="jumbotron">
-                <h1 class="display-3">GoBoss</h1>
+                <h1 class="display-3" ng-class="{ 'leaf' : started, 'fire' : !started }" ng-click="refresh()">GoBoss</h1>
                 <p class="lead">Let's start this shit up.</p>
                 <hr class="my-4">
                 <p class="lead">
-                    <a class="btn btn-primary btn-lg" href="/goboss/start" role="button">Start</a>
-                    <a class="btn btn-dark btn-lg" href="/goboss/build" role="button">Deploy</a>
-                    <a class="btn btn-dark btn-lg" href="/goboss/unbuild" role="button">(Un)Deploy</a>
-                    <a class="btn btn-danger btn-lg" href="/goboss/kill" role="button">Kill</a>
+                    <button class="btn btn-success btn-lg" ng-click="start()" role="button">Start</button>
+                    <button class="btn btn-dark btn-lg" ng-click="deploy()" role="button">Deploy</button>
+                    <button class="btn btn-dark btn-lg" ng-click="undeploy()()" role="button">(Un)Deploy</button>
+                    <button class="btn btn-danger btn-lg" ng-click="kill()" role="button">Kill</button>
                 </p>
             </div>
 
