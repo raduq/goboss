@@ -28,10 +28,9 @@ func main() {
 	r.Path("/").Methods(http.MethodGet).HandlerFunc(index)
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	r.PathPrefix("/scripts/").Handler(http.StripPrefix("/scripts/", http.FileServer(http.Dir("scripts"))))
-	r.HandleFunc("/goboss/status", status).Methods("GET")
 	r.HandleFunc("/goboss/start", bossStart).Methods("POST")
 	r.HandleFunc("/goboss/build", buildArtifact).Methods("POST")
-	r.HandleFunc("/goboss/unbuild", unbuild).Methods("POST")
+	r.HandleFunc("/goboss/clean", unbuild).Methods("POST")
 	r.HandleFunc("/goboss/kill", bossKill).Methods("POST")
 	log.Fatal(http.ListenAndServe(":8000", r))
 }
