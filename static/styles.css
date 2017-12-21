@@ -1,7 +1,5 @@
-.leaf {
-    color: green
-}
-
-.fire {
-    color: red
+body {
+  text-align: center;
+  background-color: #333333 !important;
+  height: 100%;
 }
