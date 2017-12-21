@@ -10,6 +10,7 @@
   <meta name="author" content="https://github/raduq">
   <link rel="stylesheet" href="/static/styles.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+  <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-resource.min.js"></script>
   <script src="/scripts/goboss.js"></script>
@@ -17,19 +18,15 @@
 <body ng-controller="gobossController">
     <section>
 
-        <div class="container">
+        <div class="container" >
 
-            <div class="jumbotron">
-                <h1 class="display-3" ng-class="{ 'leaf' : started, 'fire' : !started }" ng-click="refresh()">GoBoss</h1>
-                <p class="lead">Let's start this shit up.</p>
-                <hr class="my-4">
-                <p class="lead">
-                    <button class="btn btn-success btn-lg" ng-click="start()" role="button">Start</button>
-                    <button class="btn btn-dark btn-lg" ng-click="deploy()" role="button">Deploy</button>
-                </p>
-            </div>
-
-            </div>
+          <h1 class="display-1 text-light" ng-click="refresh()">GoBoss</h1>
+          <hr class="my-4">
+          <p>
+              <button class="btn btn-success btn-lg" ng-click="start()" role="button"><i class="ion-power"></i> Start</button>
+              <button class="btn btn-default btn-lg" ng-click="deploy()" role="button"><i class="ion-play"></i> Deploy</button>
+              <button class="btn btn-default btn-lg" ng-click="deploy()" role="button"><i class="ion-ios-close"></i> Clean</button>
+          </p>
 
         </div>
 
