@@ -17,4 +17,5 @@ Modify config.json putting your locales and artifacts
 - Simplify configs
 
 ## Pics
+![GoBoss](goboss_off.png "GoBoss")
 
