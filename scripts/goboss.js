@@ -4,6 +4,7 @@
 
         function initialize(){
             setScopeMethods();
+            setScopeVars();
         }
 
         function setScopeMethods(){
@@ -13,28 +14,39 @@
             $scope.kill = doKill;
         }
 
+        function setScopeVars(){
+          $scope.status = {
+            started : false,
+            deployed : false
+          };
+        }
+
         function doStart(){
-            $resource('/goboss/start').save( function(data){
-                $scope.started = true;
-            });
+          $scope.status.started = true;
+          $resource('/goboss/start').save( function(data){
+            console.log('Started!');
+          });
         }
 
         function doDeploy(){
-            $resource('/goboss/build').save( function(data){
-                $scope.deployed = true;
-            });
+          $scope.status.deployed = true;
+          $resource('/goboss/build').save( function(data){
+            console.log('Deployed!');
+          });
         }
 
         function doClean(){
+          $scope.status.deployed = false;
           $resource('/goboss/clean').save( function(data){
-              $scope.deployed = false;
+            console.log('Cleaned!');
           });
         }
 
         function doKill(){
-            $resource('/goboss/kill').save( function(data){
-                $scope.started = false;
-            });
+          $scope.status.started = false;
+          $resource('/goboss/kill').save( function(data){
+            console.log('Killed!');
+          });
         }
 
         initialize();
