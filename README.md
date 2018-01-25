@@ -15,4 +15,3 @@
 - Extract jboss start commadn (actually hardcoded)
 - Simplify configs
 
-![GoBoss](goboss_off.png "GoBoss")
