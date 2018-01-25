@@ -15,7 +15,3 @@ Modify config.json putting your locales and artifacts
 - Extract maven build command (actually hardcoded)
 - Extract jboss start command (actually hardcoded)
 - Simplify configs
-
-## Pics
-![GoBoss](goboss_off.png "GoBoss")
-

@@ -120,8 +120,12 @@ func Start(config Config) (ps *exec.Cmd, err error) {
 
 }
 
-func Execute(dir, comm string, args []string) {
-	cmd := exec.Command(comm, args...)
+func Execute(dir, comm string, args []string) (ps *exec.Cmd) {
+	return exec.Command(comm, args...)
+}
+
+func ExecuteAndPrint(dir, comm string, args []string) {
+	cmd := Execute(dir, comm, args)
 	cmd.Dir = dir
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
