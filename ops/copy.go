@@ -92,6 +92,7 @@ func RemoveContents(dir string) (err error) {
 	return nil
 }
 
+//Start the server
 func Start(config Config) (ps *exec.Cmd, err error) {
 	err = CleanLogs(config.LogsFolder)
 	if err != nil {
@@ -120,10 +121,12 @@ func Start(config Config) (ps *exec.Cmd, err error) {
 
 }
 
+//Execute a command in the cmd
 func Execute(dir, comm string, args []string) (ps *exec.Cmd) {
 	return exec.Command(comm, args...)
 }
 
+//ExecuteAndPrint a command in the cmd printing the output
 func ExecuteAndPrint(dir, comm string, args []string) {
 	cmd := Execute(dir, comm, args)
 	cmd.Dir = dir
@@ -162,6 +165,7 @@ func printReader(rd io.ReadCloser) {
 	}
 }
 
+//DoTail a log file in the cmd
 func DoTail(file string) (err error) {
 	t, err := tail.TailFile(file, tail.Config{Follow: true})
 	if err != nil {
@@ -173,6 +177,7 @@ func DoTail(file string) (err error) {
 	return nil
 }
 
+//CleanLogs in the logs folder received
 func CleanLogs(logsFolder string) (err error) {
 	exists, err := exists(logsFolder)
 	if err != nil {
