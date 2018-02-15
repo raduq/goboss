@@ -7,6 +7,7 @@ import (
 	"github.com/creamdog/gonfig"
 )
 
+//Config in the config.json file
 type Config struct {
 	Debug            bool
 	Hot              bool
@@ -26,6 +27,7 @@ type Config struct {
 	Arguments        []string
 }
 
+//NewConfig created by reading the config.json file
 func NewConfig() Config {
 	config := verifyArgs()
 
