@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"sync"
+	"syscall"
 
 	"github.com/hpcloud/tail"
 )
@@ -105,14 +106,19 @@ func Start(jbossHome string, runArgs string) (ps *exec.Cmd, err error) {
 		return nil, err
 	}
 
-	/* #nosec */
 	cmd := exec.Command("/bin/sh", "-c", binDir+binFile+runArgs)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
+	var waitStatus syscall.WaitStatus
 	err = cmd.Run()
 	if err != nil {
+		// Did the command fail because of an unsuccessful exit code
+		if exitError, ok := err.(*exec.ExitError); ok {
+			waitStatus = exitError.Sys().(syscall.WaitStatus)
+			log.Fatalln(waitStatus)
+		}
 		return cmd, err
 	}
 
