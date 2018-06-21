@@ -105,6 +105,7 @@ func Start(jbossHome string, runArgs string) (ps *exec.Cmd, err error) {
 		return nil, err
 	}
 
+	/* #nosec */
 	cmd := exec.Command("/bin/sh", "-c", binDir+binFile+runArgs)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
@@ -121,6 +122,7 @@ func Start(jbossHome string, runArgs string) (ps *exec.Cmd, err error) {
 
 // Execute a command
 func Execute(dir, comm string, args []string) (ps *exec.Cmd) {
+	/* #nosec */
 	return exec.Command(comm, args...)
 }
 
