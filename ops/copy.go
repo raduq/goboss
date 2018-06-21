@@ -54,7 +54,7 @@ func copyFileContents(src, dst string) (err error) {
 	if err != nil {
 		return
 	}
-	defer in.Close()
+	defer in.Close() // nolint: errcheck
 	out, err := os.Create(dst)
 	if err != nil {
 		return
@@ -72,13 +72,13 @@ func copyFileContents(src, dst string) (err error) {
 	return
 }
 
-//RemoveContents of a folder
+// RemoveContents of a folder
 func RemoveContents(dir string) (err error) {
 	d, err := os.Open(dir)
 	if err != nil {
 		return err
 	}
-	defer d.Close()
+	defer d.Close() // nolint: errcheck
 	names, err := d.Readdirnames(-1)
 	if err != nil {
 		return err
@@ -92,41 +92,39 @@ func RemoveContents(dir string) (err error) {
 	return nil
 }
 
-//Start the server
-func Start(config Config) (ps *exec.Cmd, err error) {
-	err = CleanLogs(config.LogsFolder)
+// Start jboss server
+func Start(jbossHome string, runArgs string) (ps *exec.Cmd, err error) {
+	binDir := jbossHome + "/bin"
+	serverDir := jbossHome + "/standalone"
+	logDir := serverDir + "/log"
+	binFile := "/standalone.sh "
+	logFile := "/server.log"
+
+	err = CleanLogs(logDir)
 	if err != nil {
 		return nil, err
 	}
 
-	binFile := config.RunFile + " "
-	if config.Debug {
-		binFile = config.DebugFile + " "
-	}
+	cmd := exec.Command("/bin/sh", "-c", binDir+binFile+runArgs)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
 
-	pa := config.BinFolder + binFile + config.RunArgs
-	fmt.Printf("%s", pa)
-	cmd := exec.Command("/bin/sh", "-c", config.BinFolder+"/"+binFile+config.RunArgs)
-
-	err = cmd.Start()
+	err = cmd.Run()
 	if err != nil {
 		return cmd, err
 	}
 
-	err = DoTail(config.LogsFolder + "/" + config.LogFile)
-	if err != nil {
-		return cmd, err
-	}
-	return cmd, nil
-
+	err = Tail(logDir + logFile)
+	return cmd, err
 }
 
-//Execute a command in the cmd
+// Execute a command
 func Execute(dir, comm string, args []string) (ps *exec.Cmd) {
 	return exec.Command(comm, args...)
 }
 
-//ExecuteAndPrint a command in the cmd printing the output
+// ExecuteAndPrint a command in the console
 func ExecuteAndPrint(dir, comm string, args []string) {
 	cmd := Execute(dir, comm, args)
 	cmd.Dir = dir
@@ -150,7 +148,7 @@ func ExecuteAndPrint(dir, comm string, args []string) {
 	wg.Wait()
 }
 
-func printReader(rd io.ReadCloser) {
+func printReader(rd io.Reader) {
 	r := bufio.NewReader(rd)
 	for {
 		line, _, err := r.ReadLine()
@@ -165,8 +163,8 @@ func printReader(rd io.ReadCloser) {
 	}
 }
 
-//DoTail a log file in the cmd
-func DoTail(file string) (err error) {
+// Tail the jboss log to the console
+func Tail(file string) error {
 	t, err := tail.TailFile(file, tail.Config{Follow: true})
 	if err != nil {
 		return err
@@ -177,8 +175,8 @@ func DoTail(file string) (err error) {
 	return nil
 }
 
-//CleanLogs in the logs folder received
-func CleanLogs(logsFolder string) (err error) {
+// CleanLogs of jboss log's folder
+func CleanLogs(logsFolder string) error {
 	exists, err := exists(logsFolder)
 	if err != nil {
 		return err

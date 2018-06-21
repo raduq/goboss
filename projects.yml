@@ -1,0 +1,4 @@
+dir: <your project dir, ex- /home/dude/git/myproject >
+target-dir: <your project's target dir, ex- /home/dude/git/myproject/target>
+artifact: <your generated project artifact, ex- myproject.ear>
+
