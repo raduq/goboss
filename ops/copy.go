@@ -106,8 +106,11 @@ func Start(jbossHome string, runArgs string) (ps *exec.Cmd, err error) {
 	}
 
 	cmd := exec.Command("/bin/sh", "-c", binDir+binFile+runArgs)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
 
-	err = cmd.Start()
+	err = cmd.Run()
 	if err != nil {
 		return cmd, err
 	}
