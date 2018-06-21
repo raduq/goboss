@@ -72,7 +72,7 @@ func copyFileContents(src, dst string) (err error) {
 	return
 }
 
-//RemoveContents of a folder
+// RemoveContents of a folder
 func RemoveContents(dir string) (err error) {
 	d, err := os.Open(dir)
 	if err != nil {
@@ -92,27 +92,27 @@ func RemoveContents(dir string) (err error) {
 	return nil
 }
 
-func Start(config Config) (ps *exec.Cmd, err error) {
-	err = CleanLogs(config.LogsFolder)
+// Start jboss server
+func Start(jbossHome string, runArgs string) (ps *exec.Cmd, err error) {
+	binDir := jbossHome + "/bin"
+	serverDir := jbossHome + "/standalone"
+	logDir := serverDir + "/log"
+	binFile := "/standalone.sh "
+	logFile := "/server.log"
+
+	err = CleanLogs(logDir)
 	if err != nil {
 		return nil, err
 	}
 
-	binFile := config.RunFile + " "
-	if config.Debug {
-		binFile = config.DebugFile + " "
-	}
-
-	pa := config.BinFolder + binFile + config.RunArgs
-	fmt.Printf("%s", pa)
-	cmd := exec.Command("/bin/sh", "-c", config.BinFolder+"/"+binFile+config.RunArgs)
+	cmd := exec.Command("/bin/sh", "-c", binDir+binFile+runArgs)
 
 	err = cmd.Start()
 	if err != nil {
 		return cmd, err
 	}
 
-	err = DoTail(config.LogsFolder + "/" + config.LogFile)
+	err = Tail(logDir + logFile)
 	if err != nil {
 		return cmd, err
 	}
@@ -120,10 +120,12 @@ func Start(config Config) (ps *exec.Cmd, err error) {
 
 }
 
+// Execute a command
 func Execute(dir, comm string, args []string) (ps *exec.Cmd) {
 	return exec.Command(comm, args...)
 }
 
+// ExecuteAndPrint a command in the console
 func ExecuteAndPrint(dir, comm string, args []string) {
 	cmd := Execute(dir, comm, args)
 	cmd.Dir = dir
@@ -162,7 +164,8 @@ func printReader(rd io.ReadCloser) {
 	}
 }
 
-func DoTail(file string) (err error) {
+// Tail the jboss log to the console
+func Tail(file string) (err error) {
 	t, err := tail.TailFile(file, tail.Config{Follow: true})
 	if err != nil {
 		return err
@@ -173,6 +176,7 @@ func DoTail(file string) (err error) {
 	return nil
 }
 
+// CleanLogs of jboss log's folder
 func CleanLogs(logsFolder string) (err error) {
 	exists, err := exists(logsFolder)
 	if err != nil {
