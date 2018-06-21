@@ -116,6 +116,7 @@ func Start(jbossHome string, runArgs string) (ps *exec.Cmd, err error) {
 	return cmd, err
 }
 
+
 // Execute a command
 func Execute(dir, comm string, args []string) (ps *exec.Cmd) {
 	return exec.Command(comm, args...)
@@ -159,6 +160,7 @@ func printReader(rd io.Reader) {
 		fmt.Println(string(line))
 	}
 }
+
 
 // Tail the jboss log to the console
 func Tail(file string) error {
