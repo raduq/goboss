@@ -113,11 +113,7 @@ func Start(jbossHome string, runArgs string) (ps *exec.Cmd, err error) {
 	}
 
 	err = Tail(logDir + logFile)
-	if err != nil {
-		return cmd, err
-	}
-	return cmd, nil
-
+	return cmd, err
 }
 
 // Execute a command
@@ -149,7 +145,7 @@ func ExecuteAndPrint(dir, comm string, args []string) {
 	wg.Wait()
 }
 
-func printReader(rd io.ReadCloser) {
+func printReader(rd io.Reader) {
 	r := bufio.NewReader(rd)
 	for {
 		line, _, err := r.ReadLine()
@@ -165,7 +161,7 @@ func printReader(rd io.ReadCloser) {
 }
 
 // Tail the jboss log to the console
-func Tail(file string) (err error) {
+func Tail(file string) error {
 	t, err := tail.TailFile(file, tail.Config{Follow: true})
 	if err != nil {
 		return err
@@ -177,7 +173,7 @@ func Tail(file string) (err error) {
 }
 
 // CleanLogs of jboss log's folder
-func CleanLogs(logsFolder string) (err error) {
+func CleanLogs(logsFolder string) error {
 	exists, err := exists(logsFolder)
 	if err != nil {
 		return err

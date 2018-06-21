@@ -98,7 +98,7 @@ func buildArtifact(jbossHome string, buildArgs []string) {
 			log.Fatalf("cannot read projects.yml %q\n", err)
 		}
 
-		err = yaml.Unmarshal([]byte(yamlFile), &p)
+		err = yaml.Unmarshal(yamlFile, &p)
 		if err != nil {
 			log.Fatalf("cannot unmarshal projects.yml %q\n", err)
 		}
