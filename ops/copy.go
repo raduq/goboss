@@ -54,7 +54,7 @@ func copyFileContents(src, dst string) (err error) {
 	if err != nil {
 		return
 	}
-	defer in.Close()
+	defer in.Close() // nolint: errcheck
 	out, err := os.Create(dst)
 	if err != nil {
 		return
@@ -78,7 +78,7 @@ func RemoveContents(dir string) (err error) {
 	if err != nil {
 		return err
 	}
-	defer d.Close()
+	defer d.Close() // nolint: errcheck
 	names, err := d.Readdirnames(-1)
 	if err != nil {
 		return err
@@ -115,7 +115,6 @@ func Start(jbossHome string, runArgs string) (ps *exec.Cmd, err error) {
 	err = Tail(logDir + logFile)
 	return cmd, err
 }
-
 
 // Execute a command
 func Execute(dir, comm string, args []string) (ps *exec.Cmd) {
@@ -160,7 +159,6 @@ func printReader(rd io.Reader) {
 		fmt.Println(string(line))
 	}
 }
-
 
 // Tail the jboss log to the console
 func Tail(file string) error {

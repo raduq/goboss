@@ -52,7 +52,10 @@ func main() {
 		},
 	}
 	app.Version = "1.0.robot"
-	app.Run(os.Args)
+	err := app.Run(os.Args)
+	if err != nil {
+		log.WithError(err).Fatal("error starting goboss")
+	}
 }
 
 func defaultAction(cfg config.Config) func(c *cli.Context) {
